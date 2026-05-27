@@ -62,9 +62,46 @@ Isso iniciará os ouvintes conectados ao RabbitMQ aguardando eventos do sistema.
 
 ---
 
+## 🔒 Autenticação e Autorização
+
+A API utiliza **JSON Web Token (JWT)** para autenticação. 
+Com exceção da rota de login, **todas as rotas da API requerem autenticação** através de um header `Authorization` com o token recebido no momento do login.
+
+Exemplo de Header:
+```http
+Authorization: Bearer <seu_token_jwt>
+```
+
+A rota de **Atualizar o Status de um Ticket** requer privilégios de **Administrador**.
+
+---
+
 ## 🛣️ Rotas Existentes (API REST)
 
 A base de URL para todas as rotas é `http://localhost:3000/api`.
+
+### 0. Login
+Autentica um usuário existente pelo `username` e retorna um token JWT para ser utilizado nas demais requisições.
+
+- **Método:** `POST`
+- **Endpoint:** `/auth/login`
+- **Payload (JSON):**
+  ```json
+  {
+    "username": "admin"
+  }
+  ```
+- **Retorno (200 OK):**
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR...",
+    "user": {
+      "id": "admin-1",
+      "username": "admin",
+      "isAdmin": true
+    }
+  }
+  ```
 
 ### 1. Criar um novo Ticket
 Cria um chamado de suporte e publica um evento `TicketCreated` no RabbitMQ.

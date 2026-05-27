@@ -36,7 +36,7 @@ export class TicketController {
             const ticketId = req.params.id as string;
             const { status } = req.body;
             
-            await this.updateTicketStatusPort.execute({ ticketId, status: status as TicketStatus });
+            await this.updateTicketStatusPort.execute({ ticketId, status: status as TicketStatus, userId: req.user?.id || '' });
             res.status(200).json({ message: 'Status atualizado com sucesso' });
         } catch (error: any) {
             res.status(400).json({ error: error.message });
