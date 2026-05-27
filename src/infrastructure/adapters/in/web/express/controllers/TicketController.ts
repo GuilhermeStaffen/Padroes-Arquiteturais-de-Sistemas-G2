@@ -37,8 +37,9 @@ export class TicketController {
         try {
             const ticketId = req.params.id as string;
             const { status } = req.body;
-            
-            await this.updateTicketStatusPort.execute({ ticketId, status: status as TicketStatus, userId: req.user?.id || '' });
+            const userId = req.user?.id || '';
+
+            await this.updateTicketStatusPort.execute({ ticketId, status: status as TicketStatus, userId });
             res.status(200).json({ message: 'Status atualizado com sucesso' });
         } catch (error: any) {
             res.status(400).json({ error: error.message });
@@ -49,7 +50,7 @@ export class TicketController {
         try {
             const ticketId = req.params.id as string;
             const { content } = req.body;
-            const userId = req.user?.id;
+            const userId = req.user?.id || '';
 
             if (!userId) {
                 res.status(401).json({ error: 'Não autorizado paizão' });
@@ -63,10 +64,11 @@ export class TicketController {
         }
     }
 
-    async getTicket(req: Request, res: Response): Promise<void> {
+    async getTicket(req: AuthRequest, res: Response): Promise<void> {
         try {
             const ticketId = req.params.id as string;
-            const ticket = await this.getTicketPort.execute(ticketId);
+            const userId = req.user?.id || '';
+            const ticket = await this.getTicketPort.execute(ticketId, userId);
             if (!ticket) {
                 res.status(404).json({ message: 'Ticket não encontrado' });
                 return;
@@ -77,9 +79,10 @@ export class TicketController {
         }
     }
 
-    async listTickets(req: Request, res: Response): Promise<void> {
+    async listTickets(req: AuthRequest, res: Response): Promise<void> {
         try {
-            const tickets = await this.listTicketsPort.execute();
+            const userId = req.user?.id || '';
+            const tickets = await this.listTicketsPort.execute(userId);
             res.status(200).json(tickets);
         } catch (error: any) {
             res.status(500).json({ error: error.message });

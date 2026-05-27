@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import { UserRepository } from '../../../../../../domain/ports/out/UserRepository';
-import jwt from 'jsonwebtoken';
+import { LoginPort } from '../../../../../../domain/ports/in/LoginPort';
 
 export class AuthController {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly loginPort: LoginPort) {}
 
   login = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -14,25 +13,14 @@ export class AuthController {
         return;
       }
 
-      const user = await this.userRepository.findByUsername(username);
+      const result = await this.loginPort.execute(username);
 
-      if (!user) {
+      if (!result) {
         res.status(401).json({ error: 'Username inválido' });
         return;
       }
 
-      const secret = process.env.JWT_SECRET || 'secretinho-seguro';
-      const token = jwt.sign(
-        {
-          id: user.id,
-          username: user.username,
-          isAdmin: user.isAdmin,
-        },
-        secret,
-        { expiresIn: '24h' }
-      );
-
-      res.status(200).json({ token, user });
+      res.status(200).json(result);
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });

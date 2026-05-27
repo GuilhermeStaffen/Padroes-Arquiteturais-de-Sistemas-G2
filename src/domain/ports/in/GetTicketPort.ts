@@ -1,5 +1,5 @@
 import { Ticket } from '../../entities/Ticket';
 
 export interface GetTicketPort {
-    execute(id: string): Promise<Ticket | null>;
+    execute(id: string, userId: string): Promise<Ticket | null>;
 }
