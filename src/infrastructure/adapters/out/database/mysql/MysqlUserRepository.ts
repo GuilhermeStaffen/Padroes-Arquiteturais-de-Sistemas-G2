@@ -1,4 +1,5 @@
-import { UserRepository, User } from '../../../../../domain/ports/out/UserRepository';
+import { UserRepository } from '../../../../../domain/ports/out/UserRepository';
+import { User } from '../../../../../domain/entities/User';
 import { dbPool } from './MysqlConnection';
 import { RowDataPacket } from 'mysql2/promise';
 

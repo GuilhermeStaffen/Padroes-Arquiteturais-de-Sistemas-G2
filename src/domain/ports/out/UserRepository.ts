@@ -1,9 +1,4 @@
-export interface User {
-  id: string;
-  username: string;
-  isAdmin: boolean;
-  createdAt: Date;
-}
+import { User } from '../../entities/User';
 
 export interface UserRepository {
   findByUsername(username: string): Promise<User | null>;

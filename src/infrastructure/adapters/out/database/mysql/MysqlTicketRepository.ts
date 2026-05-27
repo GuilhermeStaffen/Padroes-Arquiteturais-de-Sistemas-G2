@@ -1,5 +1,6 @@
 import { TicketRepository } from '../../../../../domain/ports/out/TicketRepository';
-import { Ticket, Comment, TicketStatus } from '../../../../../domain/entities/Ticket';
+import { Ticket, TicketStatus } from '../../../../../domain/entities/Ticket';
+import { Comment } from '../../../../../domain/entities/Comment';
 import { dbPool } from './MysqlConnection';
 import { RowDataPacket } from 'mysql2';
 

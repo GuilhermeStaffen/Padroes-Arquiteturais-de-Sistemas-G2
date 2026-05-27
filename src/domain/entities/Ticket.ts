@@ -1,12 +1,6 @@
-export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
+import { Comment } from './Comment';
 
-export interface Comment {
-    id: string;
-    ticketId: string;
-    userId: string;
-    content: string;
-    createdAt: Date;
-}
+export type TicketStatus = 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
 
 export class Ticket {
     constructor(

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { TicketRepository } from '../../domain/ports/out/TicketRepository';
 import { UserRepository } from '../../domain/ports/out/UserRepository';
-import { Comment } from '../../domain/entities/Ticket';
+import { Comment } from '../../domain/entities/Comment';
 import { AddCommentPort, AddCommentCommand } from '../../domain/ports/in/AddCommentPort';
 
 export class AddCommentUseCase implements AddCommentPort {

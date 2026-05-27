@@ -1,4 +1,5 @@
-import { Ticket, Comment, TicketStatus } from '../../entities/Ticket';
+import { Ticket, TicketStatus } from '../../entities/Ticket';
+import { Comment } from '../../entities/Comment';
 
 export interface TicketRepository {
     save(ticket: Ticket): Promise<void>;

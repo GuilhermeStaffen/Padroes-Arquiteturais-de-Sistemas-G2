@@ -1,4 +1,4 @@
-import { User } from '../out/UserRepository';
+import { User } from '../../entities/User';
 
 export interface LoginResult {
     token: string;

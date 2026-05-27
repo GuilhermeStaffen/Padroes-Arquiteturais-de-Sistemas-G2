@@ -1,4 +1,4 @@
-import { Comment } from '../../entities/Ticket';
+import { Comment } from '../../entities/Comment';
 
 export interface AddCommentCommand {
     ticketId: string;
