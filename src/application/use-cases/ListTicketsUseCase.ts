@@ -11,6 +11,11 @@ export class ListTicketsUseCase implements ListTicketsPort {
         if (!user) {
             throw new Error('Usuário não encontrado');
         }
-        return this.ticketRepository.findAll();
+        
+        if (user.isAdmin) {
+            return this.ticketRepository.findAll();
+        } else {
+            return this.ticketRepository.findByUserId(userId);
+        }
     }
 }

@@ -53,6 +53,18 @@ export class MysqlTicketRepository implements TicketRepository {
         ));
     }
 
+    async findByUserId(userId: string): Promise<Ticket[]> {
+        const [ticketRows] = await dbPool.execute<RowDataPacket[]>('SELECT * FROM tickets WHERE user_id = ? ORDER BY created_at DESC', [userId]);
+        return ticketRows.map(row => new Ticket(
+            row.id,
+            row.title,
+            row.description,
+            row.user_id,
+            row.status as TicketStatus,
+            new Date(row.created_at)
+        ));
+    }
+
     async saveComment(comment: Comment): Promise<void> {
         await dbPool.execute(
             'INSERT INTO comments (id, ticket_id, user_id, content, created_at) VALUES (?, ?, ?, ?, ?)',

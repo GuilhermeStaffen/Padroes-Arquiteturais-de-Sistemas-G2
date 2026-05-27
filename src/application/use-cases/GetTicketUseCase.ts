@@ -11,6 +11,13 @@ export class GetTicketUseCase implements GetTicketPort {
         if (!user) {
             throw new Error('Usuário não encontrado');
         }
-        return this.ticketRepository.findById(id);
+        
+        const ticket = await this.ticketRepository.findById(id);
+        
+        if (ticket && !user.isAdmin && ticket.userId !== userId) {
+            throw new Error('Usuário não autorizado a visualizar este ticket');
+        }
+        
+        return ticket;
     }
 }

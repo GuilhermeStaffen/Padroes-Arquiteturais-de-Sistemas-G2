@@ -14,12 +14,16 @@ export class AddCommentUseCase implements AddCommentPort {
 
         const user = await this.userRepository.findById(command.userId);
         if (!user) {
-            throw new Error('Usuário não autorizado a comentar o ticket');
+            throw new Error('Usuário não encontrado');
         }
 
         const ticket = await this.ticketRepository.findById(command.ticketId);
         if (!ticket) {
             throw new Error('Ticket não encontrado');
+        }
+
+        if (!user.isAdmin && ticket.userId !== command.userId) {
+            throw new Error('Usuário não autorizado a comentar neste ticket');
         }
 
         const comment: Comment = {
