@@ -56,5 +56,31 @@ export class DiscordNotificationConsumer {
                 '[Discord Consumer] Mensagem enviada para o Discord.',
             );
         }
+
+        if (event.eventName === 'CommentAdded') {
+            console.log(
+                `[Discord Consumer] Processando evento: ${event.eventName}`,
+            );
+            const message = {
+                content:
+                    `**Novo Comentário Adicionado**\n\n` +
+                    `Ticket: ${event.payload.ticketId}\n` +
+                    `Comentário: ${event.payload.content}\n` +
+                    `Usuário: ${event.payload.userId} - ${event.payload.username}\n` +
+                    `Data de criação: ${event.payload.createdAt}\n`
+            };
+
+            await fetch(this.webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            });
+
+            console.log(
+                '[Discord Consumer] Mensagem enviada para o Discord.',
+            );
+        }
     }
 }

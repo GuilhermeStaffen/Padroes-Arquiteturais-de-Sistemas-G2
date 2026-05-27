@@ -11,7 +11,7 @@ export class EmailNotificationConsumer {
         const channel = await connection.createChannel();
 
         await channel.assertExchange(this.exchangeName, 'fanout', { durable: true });
-        
+
         const q = await channel.assertQueue(this.queueName, { durable: true });
         await channel.bindQueue(q.queue, this.exchangeName, '');
 
@@ -27,11 +27,15 @@ export class EmailNotificationConsumer {
     }
 
     private handleEvent(event: DomainEvent): void {
-        console.log(`[Email Consumer] Processando evento: ${event.eventName}`);
-        
         if (event.eventName === 'TicketCreated') {
+            console.log(
+                `[Email Consumer] Processando evento: ${event.eventName}`,
+            );
             console.log(`[Email Consumer] Simulando Email para novo TICKET: ${event.payload.title}. User: ${event.payload.userId}`);
         } else if (event.eventName === 'TicketStatusUpdated') {
+            console.log(
+                `[Email Consumer] Processando evento: ${event.eventName}`,
+            );
             console.log(`[Email Consumer] Simulando Email para UPDATE do TICKET: ${event.payload.ticketId} agora está com o status: ${event.payload.newStatus}`);
         }
     }

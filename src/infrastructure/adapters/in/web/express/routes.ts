@@ -20,7 +20,7 @@ const eventPublisher = new RabbitMqAdapter();
 
 const createTicketUseCase = new CreateTicketUseCase(ticketRepository, userRepository, eventPublisher);
 const updateTicketStatusUseCase = new UpdateTicketStatusUseCase(ticketRepository, userRepository, eventPublisher);
-const addCommentUseCase = new AddCommentUseCase(ticketRepository, userRepository);
+const addCommentUseCase = new AddCommentUseCase(ticketRepository, userRepository, eventPublisher);
 const getTicketUseCase = new GetTicketUseCase(ticketRepository, userRepository);
 const listTicketsUseCase = new ListTicketsUseCase(ticketRepository, userRepository);
 const loginUseCase = new LoginUseCase(userRepository);
