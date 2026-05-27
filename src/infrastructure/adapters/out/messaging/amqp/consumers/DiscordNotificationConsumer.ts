@@ -4,6 +4,8 @@ import { DomainEvent } from '../../../../../../domain/ports/out/EventPublisher';
 export class DiscordNotificationConsumer {
     private readonly exchangeName = 'ticket_events';
     private readonly queueName = 'discord_notifications_queue';
+    private readonly webhookUrl = 'https://discord.com/api/webhooks/1509234995146002525/M7nm-tl4iTN4rkfdXttdySB-UCFB6RMbRkDN1fy5iP1o3Zi0ChFSc2Y7CNYU5K907f18';
+
 
     async start(): Promise<void> {
         const rabbitUrl = process.env.RABBITMQ_URL || 'amqp://localhost';
@@ -11,7 +13,7 @@ export class DiscordNotificationConsumer {
         const channel = await connection.createChannel();
 
         await channel.assertExchange(this.exchangeName, 'fanout', { durable: true });
-        
+
         const q = await channel.assertQueue(this.queueName, { durable: true });
         await channel.bindQueue(q.queue, this.exchangeName, '');
 
@@ -26,10 +28,33 @@ export class DiscordNotificationConsumer {
         });
     }
 
-    private handleEvent(event: DomainEvent): void {
+    private async handleEvent(event: DomainEvent): Promise<void> {
         if (event.eventName === 'TicketCreated') {
-            console.log(`[Discord Consumer] Processando evento: ${event.eventName}`);
-            console.log(`[Discord Consumer] Simulando Mensagem para novo TICKET: ${event.payload.title}. User: ${event.payload.userId}`);
+            console.log(
+                `[Discord Consumer] Processando evento: ${event.eventName}`,
+            );
+
+            const message = {
+                content:
+                    `**Novo Ticket Criado**\n\n` +
+                    `Título: ${event.payload.title}\n` +
+                    `Descrição: ${event.payload.description}\n` +
+                    `Usuário: ${event.payload.username} - ${event.payload.userId}\n` +
+                    `Status: ${event.payload.status}\n` +
+                    `Data de criação: ${event.payload.createdAt}\n`
+            };
+
+            await fetch(this.webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            });
+
+            console.log(
+                '[Discord Consumer] Mensagem enviada para o Discord.',
+            );
         }
     }
 }

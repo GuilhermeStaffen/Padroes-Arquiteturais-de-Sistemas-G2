@@ -37,6 +37,9 @@ export class CreateTicketUseCase implements CreateTicketPort {
                 ticketId: ticket.id,
                 title: ticket.title,
                 userId: ticket.userId,
+                createdAt: ticket.createdAt,
+                description: ticket.description,
+                username: user.username,
                 status: ticket.status
             },
             timestamp: new Date()
