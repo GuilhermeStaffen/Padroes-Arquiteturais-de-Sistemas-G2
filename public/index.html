@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Ticket System</h1>
+        <div id="user-info" style="display: none;">
+            <span id="current-user"></span>
+            <button onclick="logout()" class="btn-logout">Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Login Section -->
+        <section id="login-section">
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p id="login-error" class="error"></p>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" style="display: none;">
+            <div class="header-actions">
+                <h2>Tickets</h2>
+                <button onclick="showCreateTicketForm()">+ Novo Ticket</button>
+            </div>
+            <div id="tickets-list" class="tickets-container"></div>
+        </section>
+
+        <!-- Create Ticket Section -->
+        <section id="create-ticket-section" style="display: none;">
+            <h2>Criar Novo Ticket</h2>
+            <form id="create-ticket-form">
+                <input type="text" id="ticket-title" placeholder="Título" required>
+                <textarea id="ticket-desc" placeholder="Descrição do problema" rows="4" required></textarea>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="showDashboard()">Cancelar</button>
+                    <button type="submit">Criar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Ticket Details Section -->
+        <section id="ticket-details-section" style="display: none;">
+            <button class="btn-back" onclick="showDashboard()">← Voltar</button>
+            <div id="ticket-details-content"></div>
+
+            <div class="comments-section">
+                <h3>Comentários</h3>
+                <div id="comments-list"></div>
+                <form id="add-comment-form">
+                    <textarea id="comment-content" placeholder="Escreva um comentário..." required></textarea>
+                    <button type="submit">Enviar Comentário</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

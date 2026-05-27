@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { CreateTicketPort } from '../../../../../../domain/ports/in/CreateTicketPort';
 import { UpdateTicketStatusPort } from '../../../../../../domain/ports/in/UpdateTicketStatusPort';
 import { AddCommentPort } from '../../../../../../domain/ports/in/AddCommentPort';
-import { MysqlTicketRepository } from '../../../../out/database/mysql/MysqlTicketRepository';
+import { GetTicketPort } from '../../../../../../domain/ports/in/GetTicketPort';
+import { ListTicketsPort } from '../../../../../../domain/ports/in/ListTicketsPort';
 import { TicketStatus } from '../../../../../../domain/entities/Ticket';
 import { AuthRequest } from '../middlewares/auth';
 
@@ -11,7 +12,8 @@ export class TicketController {
         private readonly createTicketPort: CreateTicketPort,
         private readonly updateTicketStatusPort: UpdateTicketStatusPort,
         private readonly addCommentPort: AddCommentPort,
-        private readonly ticketRepository: MysqlTicketRepository 
+        private readonly getTicketPort: GetTicketPort,
+        private readonly listTicketsPort: ListTicketsPort
     ) {}
 
     async createTicket(req: AuthRequest, res: Response): Promise<void> {
@@ -50,7 +52,7 @@ export class TicketController {
             const userId = req.user?.id;
 
             if (!userId) {
-                res.status(401).json({ error: 'Unauthorized' });
+                res.status(401).json({ error: 'Não autorizado paizão' });
                 return;
             }
 
@@ -64,7 +66,7 @@ export class TicketController {
     async getTicket(req: Request, res: Response): Promise<void> {
         try {
             const ticketId = req.params.id as string;
-            const ticket = await this.ticketRepository.findById(ticketId);
+            const ticket = await this.getTicketPort.execute(ticketId);
             if (!ticket) {
                 res.status(404).json({ message: 'Ticket não encontrado' });
                 return;
@@ -77,11 +79,10 @@ export class TicketController {
 
     async listTickets(req: Request, res: Response): Promise<void> {
         try {
-            const tickets = await this.ticketRepository.findAll();
+            const tickets = await this.listTicketsPort.execute();
             res.status(200).json(tickets);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
         }
     }
 }
-
