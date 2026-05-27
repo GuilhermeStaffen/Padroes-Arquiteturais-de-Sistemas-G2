@@ -4,6 +4,7 @@ import { UpdateTicketStatusPort } from '../../../../../../domain/ports/in/Update
 import { AddCommentPort } from '../../../../../../domain/ports/in/AddCommentPort';
 import { MysqlTicketRepository } from '../../../../out/database/mysql/MysqlTicketRepository';
 import { TicketStatus } from '../../../../../../domain/entities/Ticket';
+import { AuthRequest } from '../middlewares/auth';
 
 export class TicketController {
     constructor(
@@ -13,9 +14,16 @@ export class TicketController {
         private readonly ticketRepository: MysqlTicketRepository 
     ) {}
 
-    async createTicket(req: Request, res: Response): Promise<void> {
+    async createTicket(req: AuthRequest, res: Response): Promise<void> {
         try {
-            const { title, description, userId } = req.body;
+            const { title, description } = req.body;
+            const userId = req.user?.id;
+            
+            if (!userId) {
+                res.status(401).json({ error: 'Não autorizado paizão' });
+                return;
+            }
+
             const ticket = await this.createTicketPort.execute({ title, description, userId });
             res.status(201).json(ticket);
         } catch (error: any) {
@@ -23,7 +31,7 @@ export class TicketController {
         }
     }
 
-    async updateStatus(req: Request, res: Response): Promise<void> {
+    async updateStatus(req: AuthRequest, res: Response): Promise<void> {
         try {
             const ticketId = req.params.id as string;
             const { status } = req.body;
@@ -35,10 +43,17 @@ export class TicketController {
         }
     }
 
-    async addComment(req: Request, res: Response): Promise<void> {
+    async addComment(req: AuthRequest, res: Response): Promise<void> {
         try {
             const ticketId = req.params.id as string;
-            const { userId, content } = req.body;
+            const { content } = req.body;
+            const userId = req.user?.id;
+
+            if (!userId) {
+                res.status(401).json({ error: 'Unauthorized' });
+                return;
+            }
+
             const comment = await this.addCommentPort.execute({ ticketId, userId, content });
             res.status(201).json(comment);
         } catch (error: any) {
@@ -69,3 +84,4 @@ export class TicketController {
         }
     }
 }
+
