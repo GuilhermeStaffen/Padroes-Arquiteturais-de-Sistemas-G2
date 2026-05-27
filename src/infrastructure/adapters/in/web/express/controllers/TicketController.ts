@@ -1,0 +1,71 @@
+import { Request, Response } from 'express';
+import { CreateTicketPort } from '../../../../../../domain/ports/in/CreateTicketPort';
+import { UpdateTicketStatusPort } from '../../../../../../domain/ports/in/UpdateTicketStatusPort';
+import { AddCommentPort } from '../../../../../../domain/ports/in/AddCommentPort';
+import { MysqlTicketRepository } from '../../../../out/database/mysql/MysqlTicketRepository';
+import { TicketStatus } from '../../../../../../domain/entities/Ticket';
+
+export class TicketController {
+    constructor(
+        private readonly createTicketPort: CreateTicketPort,
+        private readonly updateTicketStatusPort: UpdateTicketStatusPort,
+        private readonly addCommentPort: AddCommentPort,
+        private readonly ticketRepository: MysqlTicketRepository 
+    ) {}
+
+    async createTicket(req: Request, res: Response): Promise<void> {
+        try {
+            const { title, description, userId } = req.body;
+            const ticket = await this.createTicketPort.execute({ title, description, userId });
+            res.status(201).json(ticket);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async updateStatus(req: Request, res: Response): Promise<void> {
+        try {
+            const ticketId = req.params.id as string;
+            const { status } = req.body;
+            
+            await this.updateTicketStatusPort.execute({ ticketId, status: status as TicketStatus });
+            res.status(200).json({ message: 'Status atualizado com sucesso' });
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async addComment(req: Request, res: Response): Promise<void> {
+        try {
+            const ticketId = req.params.id as string;
+            const { userId, content } = req.body;
+            const comment = await this.addCommentPort.execute({ ticketId, userId, content });
+            res.status(201).json(comment);
+        } catch (error: any) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    async getTicket(req: Request, res: Response): Promise<void> {
+        try {
+            const ticketId = req.params.id as string;
+            const ticket = await this.ticketRepository.findById(ticketId);
+            if (!ticket) {
+                res.status(404).json({ message: 'Ticket não encontrado' });
+                return;
+            }
+            res.status(200).json(ticket);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    async listTickets(req: Request, res: Response): Promise<void> {
+        try {
+            const tickets = await this.ticketRepository.findAll();
+            res.status(200).json(tickets);
+        } catch (error: any) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+}
