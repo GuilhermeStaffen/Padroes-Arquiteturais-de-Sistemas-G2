@@ -22,15 +22,16 @@ export class UpdateTicketStatusUseCase implements UpdateTicketStatusPort {
             throw new Error('Ticket not found');
         }
 
+        const oldStatus = ticket.status;
         ticket.updateStatus(command.status);
-        await this.ticketRepository.updateStatus(ticket.id, ticket.status);
+        await this.ticketRepository.update(ticket);
 
         await this.eventPublisher.publish({
             eventName: 'TicketStatusUpdated',
             payload: {
                 ticketId: ticket.id,
-                oldStatus: ticket.status,
-                newStatus: command.status
+                oldStatus: oldStatus,
+                newStatus: ticket.status
             },
             timestamp: new Date()
         });

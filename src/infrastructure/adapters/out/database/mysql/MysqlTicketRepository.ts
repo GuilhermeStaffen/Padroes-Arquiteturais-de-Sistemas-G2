@@ -60,7 +60,10 @@ export class MysqlTicketRepository implements TicketRepository {
         );
     }
 
-    async updateStatus(id: string, status: TicketStatus): Promise<void> {
-        await dbPool.execute('UPDATE tickets SET status = ? WHERE id = ?', [status, id]);
+    async update(ticket: Ticket): Promise<void> {
+        await dbPool.execute(
+            'UPDATE tickets SET title = ?, description = ?, status = ? WHERE id = ?',
+            [ticket.title, ticket.description, ticket.status, ticket.id]
+        );
     }
 }

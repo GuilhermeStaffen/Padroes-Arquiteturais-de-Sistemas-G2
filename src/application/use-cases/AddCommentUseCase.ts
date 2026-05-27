@@ -30,6 +30,7 @@ export class AddCommentUseCase implements AddCommentPort {
             createdAt: new Date()
         };
 
+        ticket.addComment(comment);
         await this.ticketRepository.saveComment(comment);
 
         return comment;

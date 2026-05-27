@@ -6,5 +6,5 @@ export interface TicketRepository {
     findById(id: string): Promise<Ticket | null>;
     findAll(): Promise<Ticket[]>;
     saveComment(comment: Comment): Promise<void>;
-    updateStatus(id: string, status: TicketStatus): Promise<void>;
+    update(ticket: Ticket): Promise<void>;
 }
